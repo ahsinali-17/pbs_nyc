@@ -1,0 +1,14 @@
+   Client Request → API Routes (routes/api.php) 
+   → Controllers (ApiController.php) 
+   → Models (User, Properties, etc.) 
+   → Database 
+   → Response
+
+
+
+
+
+
+
+
+
