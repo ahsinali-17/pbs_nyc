@@ -112,3 +112,16 @@ Route::post('/api/add-property-to-user', 'FrontendController@addPropertyToUser')
 Route::post('/api/delete-property-from-user', 'FrontendController@deletePropertyFromUser')->name('delete.property.from.user')->middleware('auth');
 Route::post('/api/delete-single-property-from-user', 'FrontendController@deleteSinglePropertyFromUser')->name('delete.single.property.from.user')->middleware('auth');
 Route::get('/api/get-properties-of-user', 'FrontendController@getPropertyList')->name('get.property.list.of.user')->middleware('auth');
+
+// Test email route (Remove after testing)
+Route::get('/test-email', function () {
+    try {
+        Mail::raw('Test email from PBS.NYC', function($message) {
+            $message->to('your-email@example.com')
+                   ->subject('Test Email');
+        });
+        return 'Email sent successfully!';
+    } catch (\Exception $e) {
+        return 'Error sending email: ' . $e->getMessage();
+    }
+});

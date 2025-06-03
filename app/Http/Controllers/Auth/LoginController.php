@@ -41,13 +41,19 @@ class LoginController extends Controller
     /**
      * Where to redirect users after login.
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     * @var string
+     * @return string
      */
-
     public function redirectTo()
     {
-        return '/portal';
+        // Old redirection logic (commented)
+        // return '/portal';
+
+        // New redirection logic
+        $user = Auth::user();
+        if ($user && $user->level() >= 4) { // Assuming level 4 and above can access portal
+            return 'http://localhost:3000/portal/dashboard';
+        }
+        return '/portal'; // This will trigger CheckPayment middleware which may redirect to /portal/subscribe
     }
 
     protected function authenticated(Request $request, $user)
@@ -65,6 +71,7 @@ class LoginController extends Controller
             }
             
             return redirect()->intended($this->redirectTo());
+            
         } catch (JWTException $e) {
             // If JWT generation fails, still allow session login
             if ($request->expectsJson()) {

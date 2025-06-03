@@ -9,7 +9,7 @@ use Laravel\Cashier\Cashier;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
+    /** 
      * Register any application services.
      *
      * @return void

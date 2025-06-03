@@ -60,13 +60,13 @@ class ContactController extends Controller
                 
                 // Log that we're about to send
                 Log::info('Attempting to send email', [
-                    'to' => config('mail.from.address'),
+                    'to' => 'tempm2403@gmail.com',
                     'subject' => 'New Contact Form Submission'
                 ]);
 
                 // Send email notification with error catching
                 try {
-                    Mail::to(config('mail.from.address'))->send($mail);
+                    Mail::to('tempm2403@gmail.com')->send($mail);
                     Log::info('Email sent successfully');
                 } catch (\Swift_TransportException $e) {
                     Log::error('Swift Transport Exception', [
