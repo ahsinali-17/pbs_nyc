@@ -28,9 +28,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(UrlGenerator $url)
     {
         Cashier::useCustomerModel(User::class);
-        //
-        if (env('APP_ENV') === 'production') {
-            $url->forceScheme('https');
+
+        // Handle URL scheme based on environment
+        if (app()->environment('production')) {
+            \URL::forceScheme('https');
         }
+        // Don't force any scheme in development to allow both HTTP and HTTPS
     }
 }

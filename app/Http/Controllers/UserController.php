@@ -6,6 +6,8 @@ use App\Mail\PasswordReset;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -15,14 +17,57 @@ class UserController extends Controller
 
     public function register(Request $request)
     {
-        $plainPassword = $request->password;
-        $password = bcrypt($request->password);
-        $request->request->add(['password' => $password]);
-        // create the user account
-        $created = User::create($request->all());
-        $request->request->add(['password' => $plainPassword]);
-        // login now..
-        return $this->login($request);
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8',
+                'contact_number' => 'required|string|max:255',
+                'company' => 'nullable|string|max:255',
+                'address' => 'nullable|string|max:255',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Create user
+            $user = User::create([
+                'name' => $request->name,
+                'email' => Str::lower($request->email),
+                'password' => bcrypt($request->password),
+                'contact_number' => $request->contact_number,
+                'company' => $request->company,
+                'address' => $request->address,
+            ]);
+
+            // Assign default role
+            $user->attachRole(config('roles.models.role')::where('name', '=', 'User')->first());
+            
+            // Create Stripe customer
+            $user->createOrGetStripeCustomer();
+
+            // Generate JWT token
+            $token = JWTAuth::fromUser($user);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User successfully registered',
+                'token' => $token,
+                'user' => $user
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Registration failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function login(Request $request)

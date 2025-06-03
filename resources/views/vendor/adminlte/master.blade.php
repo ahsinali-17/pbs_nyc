@@ -19,6 +19,10 @@
         @yield('title_postfix', config('adminlte.title_postfix', ''))
     </title>
 
+    {{-- Load jQuery first --}}
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/csrf.js') }}"></script>
+
     {{-- Custom stylesheets (pre AdminLTE) --}}
     @yield('adminlte_css_pre')
 
@@ -82,12 +86,11 @@
 
     {{-- Base Scripts --}}
     @if(!config('adminlte.enabled_laravel_mix'))
-        <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-        <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
-        <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
+        <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js', config('adminlte.force_https')) }}"></script>
+        <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js', config('adminlte.force_https')) }}"></script>
+        <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js', config('adminlte.force_https')) }}"></script>
     @else
-        <script src="{{ mix(config('adminlte.laravel_mix_js_path', 'js/app.js')) }}"></script>
+        <script src="{{ mix(config('adminlte.laravel_mix_js_path')) }}"></script>
     @endif
 
     {{-- Extra Configured Plugins Scripts --}}

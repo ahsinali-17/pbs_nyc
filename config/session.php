@@ -5,7 +5,7 @@ use Illuminate\Support\Str;
 return [
 
     /*
-    |--------------------------------------------------------------------------
+    |-------------------------------------------------------------------------- 
     | Default Session Driver
     |--------------------------------------------------------------------------
     |
@@ -17,8 +17,8 @@ return [
     |            "memcached", "redis", "dynamodb", "array"
     |
     */
-
-    'driver' => env('SESSION_DRIVER', 'cookie'),
+    //'driver' => env('SESSION_DRIVER', 'cookie'),
+    'driver' => env('SESSION_DRIVER', 'file'),
 
     /*
     |--------------------------------------------------------------------------
@@ -45,8 +45,8 @@ return [
     | automatically by Laravel and you can use the Session like normal.
     |
     */
-
-    'encrypt' => false,
+    //'encrypt' => false,
+    'encrypt' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -165,8 +165,8 @@ return [
     | the cookie from being sent to you if it can not be done securely.
     |
     */
-
-    'secure' => env('SESSION_SECURE_COOKIE', false),
+    //'secure' => env('SESSION_SECURE_COOKIE', false),
+    'secure' => env('SESSION_SECURE_COOKIE', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -194,6 +194,7 @@ return [
     |
     */
 
-    'same_site' => null,
+    //'same_site' => null,
+    'same_site' => 'lax',
 
 ];

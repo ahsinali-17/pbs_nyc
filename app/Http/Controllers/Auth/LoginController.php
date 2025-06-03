@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class LoginController extends Controller
 {
@@ -45,10 +47,34 @@ class LoginController extends Controller
 
     public function redirectTo()
     {
-        if (Auth::user()) {
-            return RouteServiceProvider::HOME;
-        } else {
-            return '/';
+        return '/portal';
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        try {
+            // Generate JWT token
+            $token = JWTAuth::fromUser($user);
+            
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'token' => $token,
+                    'user' => $user
+                ]);
+            }
+            
+            return redirect()->intended($this->redirectTo());
+        } catch (JWTException $e) {
+            // If JWT generation fails, still allow session login
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'user' => $user
+                ]);
+            }
+            
+            return redirect()->intended($this->redirectTo());
         }
     }
 
@@ -59,5 +85,21 @@ class LoginController extends Controller
             $array[$this->username()] = Str::lower($array[$this->username()]);
         }
         return $array;
+    }
+
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => trans('auth.failed')
+            ], 401);
+        }
+
+        return redirect()->back()
+            ->withInput($request->only($this->username(), 'remember'))
+            ->withErrors([
+                $this->username() => trans('auth.failed'),
+            ]);
     }
 }

@@ -254,14 +254,14 @@ return [
     |
     */
 
-    'use_route_url' => false,
-    'dashboard_url' => 'portal/',
-    'logout_url' => 'portal/logout',
-    'login_url' => 'portal/login',
-    'register_url' => false,
-    'password_reset_url' => 'portal/password/reset',
-    'password_email_url' => 'portal/password/email',
-    'profile_url' => 'portal/profile',
+    'use_route_url' => true,
+    'dashboard_url' => 'portal.index',
+    'logout_url' => 'logout',
+    'login_url' => 'login',
+    'register_url' => 'register',
+    'password_reset_url' => 'password.request',
+    'password_email_url' => 'password.email',
+    'profile_url' => 'profile',
 
     /*
     |--------------------------------------------------------------------------
@@ -1161,4 +1161,16 @@ return [
     */
 
     'livewire' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Assets
+    |--------------------------------------------------------------------------
+    |
+    | Here we can modify the asset loading behavior
+    |
+    */
+    'asset_url' => env('ASSET_URL', null),
+    //'force_https' => env('APP_ENV') === 'production',
+    'force_https' => false,
 ];

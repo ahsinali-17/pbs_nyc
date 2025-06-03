@@ -43,7 +43,6 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \RenatoMarinho\LaravelPageSpeed\Middleware\TrimUrls::class,
-        \App\Http\Middleware\EncryptCookies::class,
         ],
 
         'api' => [

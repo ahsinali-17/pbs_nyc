@@ -15,11 +15,18 @@ class Cors
             $response = $next($request);
         }
 
-        return $response
-            ->header('Access-Control-Allow-Origin', 'http://localhost:3000')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN')
-            ->header('Access-Control-Allow-Credentials', 'true')
-            ->header('Access-Control-Max-Age', '86400'); // 24 hours
+        $origin = $request->header('Origin');
+        $allowedOrigins = ['http://localhost:3000', $request->getSchemeAndHttpHost()];
+
+        if (in_array($origin, $allowedOrigins)) {
+            return $response
+                ->header('Access-Control-Allow-Origin', $origin)
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, X-CSRF-TOKEN')
+                ->header('Access-Control-Allow-Credentials', 'true')
+                ->header('Access-Control-Max-Age', '86400'); // 24 hours
+        }
+
+        return $response;
     }
 } 
