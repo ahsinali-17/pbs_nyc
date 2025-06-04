@@ -89,10 +89,22 @@ class UserController extends Controller
             $user->save();
         }
 
+        // ensure portal access only for level 5+
+        if (method_exists($user, 'level') && $user->level() < 5) {
+            // still authenticate but flag as non-member
+            return response()->json([
+                'success' => true,
+                'token' => $jwt_token,
+                'user' => $user,
+                'memberuser' => false,
+            ]);
+        }
+
         return response()->json([
             'success' => true,
             'token' => $jwt_token,
-            'user' => $user
+            'user' => $user,
+            'memberuser' => true,
         ]);
     }
 
